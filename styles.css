@@ -484,8 +484,9 @@ section {
 .chart-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .chart-header h4 {
@@ -493,12 +494,14 @@ section {
     margin: 0;
     color: #1f2937;
     text-align: left;
+    flex: 1;
+    padding-right: 50px;
 }
 
 .enlarge-chart-btn {
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 50%;
     padding: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -506,14 +509,20 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 32px;
+    min-height: 32px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .enlarge-chart-btn:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
-    transform: scale(1.05);
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .enlarge-chart-btn:active {
@@ -521,8 +530,8 @@ section {
 }
 
 .enlarge-chart-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 }
 
 .chart-container {
@@ -1164,12 +1173,22 @@ section {
     
     .chart-header h4 {
         font-size: 1.1rem;
+        padding-right: 60px;
     }
     
     .enlarge-chart-btn {
         min-width: 44px;
         min-height: 44px;
-        padding: 10px;
+        padding: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .enlarge-chart-btn:hover {
+        background: rgba(59, 130, 246, 0.15);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
     }
     
     .enlarge-chart-btn svg {
@@ -1295,12 +1314,22 @@ section {
     
     .chart-header h4 {
         font-size: 1rem;
+        padding-right: 55px;
     }
     
     .enlarge-chart-btn {
         min-width: 40px;
         min-height: 40px;
-        padding: 8px;
+        padding: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .enlarge-chart-btn:hover {
+        background: rgba(59, 130, 246, 0.15);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
     }
     
     .enlarge-chart-btn svg {
@@ -1360,6 +1389,23 @@ section {
         width: 98%;
         height: 95vh;
         margin: 5px;
+    }
+    
+    /* Chart Header Landscape Optimizations */
+    .chart-header h4 {
+        font-size: 1rem;
+        padding-right: 50px;
+    }
+    
+    .enlarge-chart-btn {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 8px;
+    }
+    
+    .enlarge-chart-btn svg {
+        width: 14px;
+        height: 14px;
     }
 }
 
