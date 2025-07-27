@@ -942,6 +942,56 @@ function optimizeHeroSection() {
             };
         }, 500);
     });
+    
+    // Handle chart resizing on orientation change
+    window.addEventListener('orientationchange', function() {
+        console.log('Orientation change detected, resizing charts...');
+        
+        // Immediate resize attempt
+        setTimeout(() => {
+            resizeAllCharts();
+            resizeModalCharts();
+        }, 100);
+        
+        // Additional resize after orientation is fully changed
+        setTimeout(() => {
+            resizeAllCharts();
+            resizeModalCharts();
+        }, 500);
+        
+        // Final resize attempt to ensure proper sizing
+        setTimeout(() => {
+            resizeAllCharts();
+            resizeModalCharts();
+        }, 1000);
+    });
+    
+    // Also handle window resize for better responsiveness
+    window.addEventListener('resize', debounce(function() {
+        resizeAllCharts();
+    }, 250));
+    
+    // Mobile-specific orientation handling
+    if (window.innerWidth <= 768) {
+        let lastOrientation = window.orientation || 0;
+        
+        window.addEventListener('orientationchange', function() {
+            const currentOrientation = window.orientation || 0;
+            
+            if (currentOrientation !== lastOrientation) {
+                console.log(`Orientation changed from ${lastOrientation} to ${currentOrientation}`);
+                lastOrientation = currentOrientation;
+                
+                // Force chart recreation for mobile orientation changes
+                setTimeout(() => {
+                    if (window.fuelData && window.fuelData.allRows) {
+                        console.log('Recreating charts for mobile orientation change...');
+                        createAnalyticsCharts(window.fuelData);
+                    }
+                }, 300);
+            }
+        });
+    }
 }
 
 // Adjust hero image positioning for better mobile fit
@@ -959,8 +1009,8 @@ function adjustHeroImagePosition(heroSection, img) {
     if (screenWidth <= 480) {
         // Small screens - position to show most interesting part
         if (screenRatio < 1) {
-            // Portrait - position higher to show more content
-            heroSection.style.backgroundPosition = 'center 40%';
+            // Portrait - position left third, higher to show more content
+            heroSection.style.backgroundPosition = '33% 40%';
         } else {
             // Landscape - position to center
             heroSection.style.backgroundPosition = 'center 30%';
@@ -968,8 +1018,8 @@ function adjustHeroImagePosition(heroSection, img) {
     } else if (screenWidth <= 768) {
         // Medium screens
         if (screenRatio < 1) {
-            // Portrait
-            heroSection.style.backgroundPosition = 'center 35%';
+            // Portrait - position left third
+            heroSection.style.backgroundPosition = '33% 35%';
         } else {
             // Landscape
             heroSection.style.backgroundPosition = 'center 25%';
@@ -982,6 +1032,92 @@ function adjustHeroImagePosition(heroSection, img) {
     // Ensure proper background sizing
     heroSection.style.backgroundSize = 'cover';
     heroSection.style.backgroundRepeat = 'no-repeat';
+}
+
+// Resize all charts to fit current orientation
+function resizeAllCharts() {
+    const chartIds = [
+        'efficiencyChart', 
+        'monthlyChart', 
+        'vehicleChart', 
+        'costChart',
+        'monthlyCostChart',
+        'stackedMonthlyChart',
+        'yearlyMachineChart',
+        'monthlyTrendsChart',
+        'modalChartCanvas'
+    ];
+    
+    let chartsResized = 0;
+    
+    chartIds.forEach(chartId => {
+        const chart = Chart.getChart(chartId);
+        if (chart) {
+            try {
+                // Force chart to resize
+                chart.resize();
+                chartsResized++;
+                
+                // Additional resize for better mobile handling
+                setTimeout(() => {
+                    chart.resize();
+                }, 100);
+            } catch (error) {
+                console.warn(`Failed to resize chart ${chartId}:`, error);
+            }
+        }
+    });
+    
+    console.log(`${chartsResized} charts resized for orientation change`);
+    
+    // If charts are still not properly sized, recreate them
+    setTimeout(() => {
+        if (window.fuelData && window.fuelData.allRows) {
+            console.log('Recreating charts for better orientation fit...');
+            createAnalyticsCharts(window.fuelData);
+        }
+    }, 500);
+}
+
+// Resize modal charts specifically for better mobile fit
+function resizeModalCharts() {
+    const modalChart = Chart.getChart('modalChartCanvas');
+    if (modalChart) {
+        try {
+            // Force modal chart to resize
+            modalChart.resize();
+            
+            // Additional resize for mobile reliability
+            setTimeout(() => {
+                modalChart.resize();
+            }, 100);
+            
+            // Adjust modal container if needed
+            const modalContent = document.querySelector('.chart-modal-content');
+            if (modalContent) {
+                // Ensure modal fits screen properly
+                const screenHeight = window.innerHeight;
+                const screenWidth = window.innerWidth;
+                
+                if (screenWidth <= 768) {
+                    // Mobile optimizations
+                    if (window.orientation === 90 || window.orientation === -90) {
+                        // Landscape
+                        modalContent.style.maxHeight = '95vh';
+                        modalContent.style.width = '98%';
+                    } else {
+                        // Portrait
+                        modalContent.style.maxHeight = '90vh';
+                        modalContent.style.width = '95%';
+                    }
+                }
+            }
+            
+            console.log('Modal chart resized for orientation change');
+        } catch (error) {
+            console.warn('Failed to resize modal chart:', error);
+        }
+    }
 }
 
 // ===== MOBILE CHART TAP FUNCTIONALITY =====

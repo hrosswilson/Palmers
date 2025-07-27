@@ -998,6 +998,16 @@ section {
         min-height: 300px;
         /* Improve scrolling on mobile */
         touch-action: pan-x pan-y;
+        /* Better orientation handling */
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    /* Ensure charts resize properly on orientation change */
+    .chart-container canvas {
+        max-width: 100% !important;
+        height: auto !important;
     }
     
     /* Add more space between chart cards for easier scrolling */
@@ -1075,6 +1085,28 @@ section {
     }
 
     /* Modal Optimizations */
+    /* Chart Modal Mobile Optimizations */
+    .chart-modal-content {
+        width: 95%;
+        max-width: none;
+        max-height: 90vh;
+        margin: 10px;
+    }
+
+    .chart-modal-header {
+        padding: 15px 20px;
+    }
+
+    .chart-modal-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .chart-modal-body {
+        padding: 15px;
+        height: 70vh;
+        min-height: 300px;
+    }
+
     .form-modal-content {
         width: 98%;
         height: 95vh;
@@ -1107,7 +1139,7 @@ section {
 @media (max-width: 480px) {
     .hero {
         /* Small screen image fitting */
-        background-position: center 35%;
+        background-position: 33% 35%; /* Left third for small screens */
         background-size: cover;
         /* Ensure proper scaling on very small screens */
         min-height: 100vh;
@@ -1164,6 +1196,27 @@ section {
         font-size: 1.3rem;
     }
     
+    /* Small screen chart modal optimizations */
+    .chart-modal-content {
+        width: 98%;
+        max-height: 92vh;
+        margin: 5px;
+    }
+
+    .chart-modal-header {
+        padding: 10px 15px;
+    }
+
+    .chart-modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .chart-modal-body {
+        padding: 10px;
+        height: 75vh;
+        min-height: 200px;
+    }
+    
     /* Mobile form header improvements */
     .form-header {
         padding: 12px 15px;
@@ -1217,6 +1270,34 @@ section {
 
     .stat-card h3 {
         font-size: 1.8rem;
+    }
+    
+    /* Chart Modal Landscape Optimizations */
+    .chart-modal-content {
+        width: 98%;
+        max-height: 95vh;
+        margin: 5px;
+    }
+
+    .chart-modal-header {
+        padding: 10px 15px;
+    }
+
+    .chart-modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .chart-modal-body {
+        padding: 10px;
+        height: 80vh;
+        min-height: 250px;
+    }
+    
+    /* Form Modal Landscape Optimizations */
+    .form-modal-content {
+        width: 98%;
+        height: 95vh;
+        margin: 5px;
     }
 }
 
@@ -1356,7 +1437,7 @@ html {
     .hero {
         /* Better image fitting for mobile */
         background-size: cover;
-        background-position: center 30%; /* Position image to show more interesting part */
+        background-position: 33% 30%; /* Position image to show left third for better composition */
         background-repeat: no-repeat;
         /* Ensure image covers the full area properly */
         background-clip: border-box;
@@ -1373,7 +1454,7 @@ html {
     /* Portrait orientation adjustments */
     @media (max-width: 768px) and (orientation: portrait) {
         .hero {
-            background-position: center 40%; /* Higher position for portrait */
+            background-position: 33% 40%; /* Left third, higher position for portrait */
             background-size: cover;
         }
     }
