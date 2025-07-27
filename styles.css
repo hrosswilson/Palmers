@@ -493,8 +493,9 @@ section {
     font-size: 1.3rem;
     margin: 0;
     color: #1f2937;
-    text-align: left;
+    text-align: center;
     flex: 1;
+    padding-left: 50px;
     padding-right: 50px;
 }
 
@@ -513,7 +514,7 @@ section {
     min-height: 32px;
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     backdrop-filter: blur(10px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -1173,6 +1174,7 @@ section {
     
     .chart-header h4 {
         font-size: 1.1rem;
+        padding-left: 60px;
         padding-right: 60px;
     }
     
@@ -1314,6 +1316,7 @@ section {
     
     .chart-header h4 {
         font-size: 1rem;
+        padding-left: 55px;
         padding-right: 55px;
     }
     
@@ -1394,6 +1397,7 @@ section {
     /* Chart Header Landscape Optimizations */
     .chart-header h4 {
         font-size: 1rem;
+        padding-left: 50px;
         padding-right: 50px;
     }
     
