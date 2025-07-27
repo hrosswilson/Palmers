@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#2563eb">
-    <title>Farm Fuel Tracker - Track Machine Fuel Consumption</title>
+    <title>Fuel Tracker - Track Machine Fuel Consumption</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,7 +33,7 @@
     <main>
         <section id="home" class="hero">
             <div class="container">
-                <h1 class="hero-title">Farm Fuel Tracker</h1>
+                <h1 class="hero-title">Fuel Tracker</h1>
                 <p class="hero-subtitle">Track fuel consumption and machine hours across your entire fleet</p>
                 <button class="cta-button" onclick="scrollToSection('log-fuel')">Log Fuel Now</button>
             </div>
@@ -48,6 +48,12 @@
                         <p>Select your machine, enter the fuel quantity and current hours to log your fuel consumption.</p>
                     </div>
                     <div class="google-form-wrapper">
+                        <div class="form-header">
+                            <h4>Fuel Log Form</h4>
+                            <button class="enlarge-form-button" onclick="openFormModal()" title="Enlarge Form">
+                                Enlarge
+                            </button>
+                        </div>
                         <iframe 
                             src="https://docs.google.com/forms/d/e/1FAIpQLSdooF1nSkyBdkMW6JbZbK7E1M_cuUD-32rkk5hIMS5TjaPWbw/viewform?embedded=true" 
                             width="100%" 
@@ -97,7 +103,7 @@
                             <h4>Cost Analysis</h4>
                             <div class="cost-inputs">
                                 <label for="dieselPrice">Diesel Price per Litre (£):</label>
-                                <input type="number" id="dieselPrice" value="1.50" step="0.01" min="0" class="cost-input">
+                                <input type="number" id="dieselPrice" value="1.15" step="0.01" min="0" class="cost-input">
                                 <button onclick="updateCostAnalysis()" class="cost-button">Update Analysis</button>
                             </div>
                             <div class="cost-summary">
@@ -189,14 +195,14 @@
                 <div class="stats-content">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon">🚜</div>
-                            <h3>7</h3>
-                            <p>Machines Tracked</p>
-                        </div>
-                        <div class="stat-card">
                             <div class="stat-icon">⛽</div>
                             <h3>0</h3>
                             <p>Liters This Month</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛢️</div>
+                            <h3>0</h3>
+                            <p>All Time Litres</p>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon">⏱️</div>
@@ -216,7 +222,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Farm Fuel Tracker. Built for efficient farm management.</p>
+            <p>&copy; 2025 Fuel Tracker. Built for efficient farm management.</p>
         </div>
     </footer>
 
@@ -229,6 +235,27 @@
             </div>
             <div class="chart-modal-body">
                 <canvas id="modalChartCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Popup Modal -->
+    <div id="formModal" class="form-modal">
+        <div class="form-modal-content">
+            <div class="form-modal-header">
+                <h3>Fuel Log Form</h3>
+                <button class="form-modal-close" onclick="closeFormModal()">&times;</button>
+            </div>
+            <div class="form-modal-body">
+                <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdooF1nSkyBdkMW6JbZbK7E1M_cuUD-32rkk5hIMS5TjaPWbw/viewform?embedded=true" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0">
+                    Loading…
+                </iframe>
             </div>
         </div>
     </div>

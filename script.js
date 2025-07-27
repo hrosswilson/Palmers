@@ -68,6 +68,14 @@ function initNavigation() {
 
         // Improve touch scrolling
         document.body.style.webkitOverflowScrolling = 'touch';
+        
+        // Optimize for mobile performance
+        document.body.style.touchAction = 'manipulation';
+        
+        // Reduce motion for better performance
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.body.style.setProperty('--transition-duration', '0.1s');
+        }
     }
 }
 
@@ -188,22 +196,26 @@ function autoLoadData() {
 
 // Update dashboard stats
 function updateStats() {
-    // This would connect to Google Sheets API in a real implementation
-    // For now, we'll show placeholder data
-    const stats = {
-        vehicles: 7,
-        litersThisMonth: 0,
-        totalHours: 0,
-        fuelLogs: 0
-    };
-    
-    // Update stats display
-    const statElements = document.querySelectorAll('.stat-card h3');
-    if (statElements.length >= 4) {
-        statElements[0].textContent = stats.vehicles;
-        statElements[1].textContent = stats.litersThisMonth;
-        statElements[2].textContent = stats.totalHours;
-        statElements[3].textContent = stats.fuelLogs;
+    // If we have fuel data, use real data; otherwise show placeholder
+    if (window.fuelData && window.fuelData.allRows) {
+        updateDashboardStats(window.fuelData.allRows);
+    } else {
+        // Show placeholder data when no fuel data is available
+        const stats = {
+            litersThisMonth: 0,
+            allTimeLitres: 0,
+            totalHours: 0,
+            fuelLogs: 0
+        };
+        
+        // Update stats display
+        const statElements = document.querySelectorAll('.stat-card h3');
+        if (statElements.length >= 4) {
+            statElements[0].textContent = stats.litersThisMonth;
+            statElements[1].textContent = stats.allTimeLitres || 0;
+            statElements[2].textContent = stats.totalHours;
+            statElements[3].textContent = stats.fuelLogs;
+        }
     }
 }
 
@@ -287,11 +299,18 @@ async function loadData() {
             const headers = data.values[0];
             const allRows = data.values.slice(1);
             
-            // Get the 10 most recent logs (assuming newest are at the bottom)
-            const recentRows = allRows.slice(-10);
+            // Sort all rows by timestamp (most recent first)
+            const sortedRows = allRows.sort((a, b) => {
+                const dateA = new Date(a[0]); // Assuming timestamp is in column 0
+                const dateB = new Date(b[0]);
+                return dateB - dateA; // Most recent first
+            });
+            
+            // Get the 10 most recent logs
+            const recentRows = sortedRows.slice(0, 10);
             
             // Store data globally for analytics with timestamp
-            window.fuelData = { headers, recentRows, allRows };
+            window.fuelData = { headers, recentRows, allRows: sortedRows };
             window.lastDataFetch = Date.now();
             
             // Display the data
@@ -426,7 +445,7 @@ function updateTableView(mode, recentRows, allRows) {
     }
     
     if (mode === 'recent') {
-        const recentFiltered = filteredByVehicle.slice(-10);
+        const recentFiltered = filteredByVehicle.slice(0, 10); // Most recent first
         tableHeader.textContent = `Recent Fuel Logs (Last 10${currentVehicle ? ` - ${currentVehicle}` : ''})`;
         tbody.innerHTML = recentFiltered.map(row => `
             <tr>
@@ -457,8 +476,8 @@ function filterTable(vehicleFilter, viewMode, recentRows, allRows) {
     // Then apply view mode (recent vs all)
     let finalRows;
     if (viewMode === 'recent') {
-        // Get last 10 from the filtered vehicle data
-        finalRows = filteredByVehicle.slice(-10);
+        // Get first 10 from the filtered vehicle data (most recent first)
+        finalRows = filteredByVehicle.slice(0, 10);
     } else {
         // Show all filtered vehicle data
         finalRows = filteredByVehicle;
@@ -483,10 +502,27 @@ function updateDashboardStats(rows) {
     const totalHours = calculateTotalHours(rows);
     const uniqueVehicles = new Set(rows.map(row => row[1])).size; // Assuming machine is column 1
     
+    // Calculate current month's fuel usage
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    let litresThisMonth = 0;
+    
+    rows.forEach(row => {
+        const timestamp = row[0];
+        const litres = parseFloat(row[2]) || 0;
+        
+        if (timestamp) {
+            const date = new Date(timestamp);
+            if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+                litresThisMonth += litres;
+            }
+        }
+    });
+    
     // Update stat cards
     const statElements = document.querySelectorAll('.stat-card h3');
     if (statElements.length >= 4) {
-        statElements[0].textContent = uniqueVehicles;
+        statElements[0].textContent = Math.round(litresThisMonth);
         statElements[1].textContent = Math.round(totalFuel);
         statElements[2].textContent = Math.round(totalHours);
         statElements[3].textContent = totalLogs;
@@ -707,7 +743,7 @@ window.addEventListener('load', function() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -725,9 +761,199 @@ window.addEventListener('load', function() {
             font-weight: 600;
             z-index: 10000;
         }
+        
+        /* Mobile loading optimization */
+        @media (max-width: 768px) {
+            body:not(.loaded)::after {
+                font-size: 1.2rem;
+            }
+        }
     `;
     document.head.appendChild(style);
+    
+    // Add mobile-specific optimizations after load
+    if (window.innerWidth <= 768) {
+        // Optimize for mobile performance
+        document.body.style.setProperty('--transition-duration', '0.2s');
+        
+        // Add mobile-specific event listeners
+        addMobileOptimizations();
+    }
 });
+
+// Mobile-specific optimizations
+function addMobileOptimizations() {
+    // Optimize scroll performance
+    let ticking = false;
+    
+    function updateScroll() {
+        ticking = false;
+        // Any scroll-based updates can go here
+    }
+    
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(updateScroll);
+            ticking = true;
+        }
+    }
+    
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // Optimize touch events
+    document.addEventListener('touchstart', function() {}, { passive: true });
+    document.addEventListener('touchmove', function() {}, { passive: true });
+    
+    // Prevent zoom on double tap for buttons
+    const buttons = document.querySelectorAll('button, .cta-button, .nav-link');
+    buttons.forEach(button => {
+        button.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.click();
+        }, { passive: false });
+    });
+}
+
+// ===== MOBILE CHART TAP FUNCTIONALITY =====
+
+// Add mobile tap functionality to charts
+function addMobileChartTapFunctionality(chart, chartId) {
+    if (!chart || !chart.canvas) return;
+    
+    const canvas = chart.canvas;
+    let activeTooltip = null;
+    
+    // Create tooltip element for mobile
+    const tooltip = document.createElement('div');
+    tooltip.className = 'mobile-chart-tooltip';
+    tooltip.style.cssText = `
+        position: absolute;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        max-width: 200px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    `;
+    
+    // Add tooltip to chart container
+    const chartContainer = canvas.closest('.chart-container');
+    if (chartContainer) {
+        chartContainer.style.position = 'relative';
+        chartContainer.appendChild(tooltip);
+    }
+    
+    // Handle tap events
+    function handleTap(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Get chart elements at position
+        const elements = chart.getElementsAtEventForMode(
+            { x, y },
+            'nearest',
+            { intersect: true },
+            false
+        );
+        
+        if (elements.length > 0) {
+            const element = elements[0];
+            const datasetIndex = element.datasetIndex;
+            const index = element.index;
+            
+            // Get data point info
+            const dataset = chart.data.datasets[datasetIndex];
+            const label = chart.data.labels[index];
+            const value = dataset.data[index];
+            
+            // Create tooltip content
+            let tooltipContent = '';
+            if (dataset.label) {
+                tooltipContent = `${dataset.label}: ${value}`;
+            } else {
+                tooltipContent = `${label}: ${value}`;
+            }
+            
+            // Add units based on chart type
+            if (chartId.includes('efficiency')) {
+                tooltipContent += ' L/hr';
+            } else if (chartId.includes('cost')) {
+                tooltipContent += ' £';
+            } else if (chartId.includes('monthly') || chartId.includes('trends')) {
+                tooltipContent += ' L';
+            }
+            
+            tooltip.textContent = tooltipContent;
+            
+            // Position tooltip
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let tooltipX = e.clientX - tooltipRect.width / 2;
+            let tooltipY = e.clientY - tooltipRect.height - 10;
+            
+            // Keep tooltip within viewport
+            if (tooltipX < 10) tooltipX = 10;
+            if (tooltipX + tooltipRect.width > window.innerWidth - 10) {
+                tooltipX = window.innerWidth - tooltipRect.width - 10;
+            }
+            if (tooltipY < 10) tooltipY = e.clientY + 10;
+            
+            tooltip.style.left = tooltipX + 'px';
+            tooltip.style.top = tooltipY + 'px';
+            tooltip.style.opacity = '1';
+            
+            activeTooltip = tooltip;
+            
+            // Hide tooltip after 3 seconds
+            setTimeout(() => {
+                if (activeTooltip === tooltip) {
+                    tooltip.style.opacity = '0';
+                    activeTooltip = null;
+                }
+            }, 3000);
+            
+        } else {
+            // Hide tooltip if tapping outside data points
+            if (activeTooltip) {
+                activeTooltip.style.opacity = '0';
+                activeTooltip = null;
+            }
+        }
+    }
+    
+    // Add event listeners for mobile
+    canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        handleTap(e.touches[0]);
+    }, { passive: false });
+    
+    // Also add click for desktop testing
+    canvas.addEventListener('click', handleTap);
+    
+    // Hide tooltip when tapping outside
+    document.addEventListener('touchstart', function(e) {
+        if (!canvas.contains(e.target) && activeTooltip) {
+            activeTooltip.style.opacity = '0';
+            activeTooltip = null;
+        }
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!canvas.contains(e.target) && activeTooltip) {
+            activeTooltip.style.opacity = '0';
+            activeTooltip = null;
+        }
+    });
+    
+    return chart;
+}
 
 // ===== ANALYTICS DASHBOARD FUNCTIONS =====
 
@@ -834,7 +1060,7 @@ function showAnalyticsError() {
 
 // Update cost analysis based on diesel price
 function updateCostAnalysis() {
-    const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.50;
+    const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
     
     if (window.fuelData && window.fuelData.allRows) {
         // Destroy existing cost charts before recreating
@@ -949,7 +1175,7 @@ function createAnalyticsCharts(data) {
     
     try {
         console.log('Creating cost chart...');
-        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.50;
+        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
         const costData = calculateCosts(data.allRows, dieselPrice);
         updateCostDisplay(costData);
         createCostChart(costData);
@@ -959,7 +1185,7 @@ function createAnalyticsCharts(data) {
     
     try {
         console.log('Creating monthly cost chart...');
-        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.50;
+        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
         createMonthlyCostChart(data.allRows, dieselPrice);
     } catch (error) {
         console.error('Error creating monthly cost chart:', error);
@@ -1207,12 +1433,12 @@ function recreateChartInModal(chartId) {
             createModalVehicleChart(window.fuelData.allRows);
             break;
         case 'costChart':
-            const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.50;
+            const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
             const costData = calculateCosts(window.fuelData.allRows, dieselPrice);
             createModalCostChart(costData);
             break;
         case 'monthlyCostChart':
-            const dieselPrice2 = parseFloat(document.getElementById('dieselPrice').value) || 1.50;
+            const dieselPrice2 = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
             createModalMonthlyCostChart(window.fuelData.allRows, dieselPrice2);
             break;
         case 'stackedMonthlyChart':
@@ -1234,7 +1460,7 @@ function createModalEfficiencyChart(rows) {
     const efficiencyData = calculateEfficiency(rows);
     const modalCanvas = document.getElementById('modalChartCanvas');
     
-    new Chart(modalCanvas, {
+    const chart = new Chart(modalCanvas, {
         type: 'bar',
         data: {
             labels: efficiencyData.vehicles,
@@ -1283,6 +1509,9 @@ function createModalEfficiencyChart(rows) {
             }
         }
     });
+    
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'modalEfficiencyChart');
 }
 
 function createModalMonthlyChart(rows) {
@@ -1651,19 +1880,31 @@ function setupChartModalListeners() {
 
 // Close modal when clicking outside
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('chartModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
+    // Chart modal event listeners
+    const chartModal = document.getElementById('chartModal');
+    if (chartModal) {
+        chartModal.addEventListener('click', function(e) {
+            if (e.target === chartModal) {
                 closeChartModal();
             }
         });
     }
     
-    // Close modal with Escape key
+    // Form modal event listeners
+    const formModal = document.getElementById('formModal');
+    if (formModal) {
+        formModal.addEventListener('click', function(e) {
+            if (e.target === formModal) {
+                closeFormModal();
+            }
+        });
+    }
+    
+    // Close modals with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeChartModal();
+            closeFormModal();
         }
     });
 });
@@ -1671,6 +1912,50 @@ document.addEventListener('DOMContentLoaded', function() {
 // Make functions available globally
 window.openChartModal = openChartModal;
 window.closeChartModal = closeChartModal;
+
+// ===== FORM MODAL FUNCTIONS =====
+
+// Open form modal
+function openFormModal() {
+    console.log('Opening form modal...');
+    
+    const modal = document.getElementById('formModal');
+    if (!modal) {
+        console.error('Form modal not found');
+        return;
+    }
+    
+    // Show the modal
+    modal.classList.add('show');
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+    
+    console.log('Form modal opened successfully');
+}
+
+// Close form modal
+function closeFormModal() {
+    console.log('Closing form modal...');
+    
+    const modal = document.getElementById('formModal');
+    if (!modal) {
+        console.error('Form modal not found');
+        return;
+    }
+    
+    // Hide the modal
+    modal.classList.remove('show');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    console.log('Form modal closed successfully');
+}
+
+// Make form modal functions available globally
+window.openFormModal = openFormModal;
+window.closeFormModal = closeFormModal;
 
     // Calculate total hours across all machines
 function calculateTotalHours(rows) {
@@ -1993,7 +2278,7 @@ function createEfficiencyChart(rows) {
     
     console.log('Found efficiency chart canvas:', ctx);
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: efficiencyData.vehicles,
@@ -2040,6 +2325,9 @@ function createEfficiencyChart(rows) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'efficiencyChart');
+    
     console.log('Efficiency chart created successfully');
 }
 
@@ -2059,7 +2347,7 @@ function createMonthlyChart(rows) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: monthlyData.months,
@@ -2105,6 +2393,9 @@ function createMonthlyChart(rows) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'monthlyChart');
+    
     console.log('Monthly chart created successfully');
 }
 
@@ -2124,7 +2415,7 @@ function createVehicleChart(rows) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: vehicleData.vehicles,
@@ -2153,6 +2444,9 @@ function createVehicleChart(rows) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'vehicleChart');
+    
     console.log('Vehicle chart created successfully');
 }
 
@@ -2173,7 +2467,7 @@ function createCostChart(costData) {
     const vehicles = Object.keys(costData.vehicleCosts);
     const costs = vehicles.map(vehicle => costData.vehicleCosts[vehicle].total);
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: vehicles,
@@ -2220,6 +2514,9 @@ function createCostChart(costData) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'costChart');
+    
     console.log('Cost chart created successfully');
 }
 
@@ -2239,7 +2536,7 @@ function createMonthlyCostChart(rows, dieselPrice) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: monthlyCostData.months,
@@ -2288,6 +2585,9 @@ function createMonthlyCostChart(rows, dieselPrice) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'monthlyCostChart');
+    
     console.log('Monthly cost chart created successfully');
 }
 
@@ -2309,7 +2609,7 @@ function createStackedMonthlyChart(rows) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: stackedData.months,
@@ -2349,6 +2649,9 @@ function createStackedMonthlyChart(rows) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'stackedMonthlyChart');
+    
     console.log('Stacked monthly chart created successfully');
 }
 
@@ -2368,7 +2671,7 @@ function createYearlyMachineChart(rows) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: yearlyData.years,
@@ -2406,6 +2709,9 @@ function createYearlyMachineChart(rows) {
         }
     });
     
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'yearlyMachineChart');
+    
     console.log('Yearly machine chart created successfully');
 }
 
@@ -2425,7 +2731,7 @@ function createMonthlyTrendsChart(rows) {
         existingChart.destroy();
     }
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: trendsData.months,
@@ -2468,6 +2774,9 @@ function createMonthlyTrendsChart(rows) {
             }
         }
     });
+    
+    // Add mobile tap functionality
+    addMobileChartTapFunctionality(chart, 'monthlyTrendsChart');
     
     console.log('Monthly trends chart created successfully');
 }
