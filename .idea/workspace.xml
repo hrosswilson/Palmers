@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78400b26-1cd7-4233-90fc-a80af9d6a19c" name="Changes" comment="Security Improvements &amp; Diesel Cost update">
+    <list default="true" id="78400b26-1cd7-4233-90fc-a80af9d6a19c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +65,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753605609099</updated>
-      <workItem from="1753605610125" duration="9317000" />
+      <workItem from="1753605610125" duration="10529000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -115,7 +115,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753623135628</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Mobile UI Improvements:&#10;- Portrait and landscape issues - not resetting fixed&#10;- Improve homescreen layout for image when in portrait mode on mobile">
+      <option name="closed" value="true" />
+      <created>1753624126870</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1753624126870</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,6 +136,7 @@
     <MESSAGE value="This is the MVP version" />
     <MESSAGE value="Mobile Enhancements&#10; - improve scrollability&#10; - improve performance with image transitions&#10; - improve image display on different devices" />
     <MESSAGE value="Security Improvements &amp; Diesel Cost update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Security Improvements &amp; Diesel Cost update" />
+    <MESSAGE value="Mobile UI Improvements:&#10;- Portrait and landscape issues - not resetting fixed&#10;- Improve homescreen layout for image when in portrait mode on mobile" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mobile UI Improvements:&#10;- Portrait and landscape issues - not resetting fixed&#10;- Improve homescreen layout for image when in portrait mode on mobile" />
   </component>
 </project>

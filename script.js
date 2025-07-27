@@ -1589,7 +1589,7 @@ function destroyAllCharts() {
 
 // Function to restore chart canvas elements
 function restoreChartCanvases() {
-    const chartContainers = document.querySelectorAll('.chart-container');
+    const chartCards = document.querySelectorAll('.chart-card');
     const canvasIds = [
         'efficiencyChart', 
         'monthlyChart', 
@@ -1601,16 +1601,20 @@ function restoreChartCanvases() {
         'monthlyTrendsChart'
     ];
     
-    chartContainers.forEach((container, index) => {
+    chartCards.forEach((card, index) => {
         if (index < canvasIds.length) {
-            // Clear all placeholder content first
-            container.innerHTML = '';
-            
-            // Create new canvas
-            const canvas = document.createElement('canvas');
-            canvas.id = canvasIds[index];
-            container.appendChild(canvas);
-            console.log(`Created canvas: ${canvasIds[index]}`);
+            // Find the chart container within the card
+            const container = card.querySelector('.chart-container');
+            if (container) {
+                // Clear all placeholder content first
+                container.innerHTML = '';
+                
+                // Create new canvas
+                const canvas = document.createElement('canvas');
+                canvas.id = canvasIds[index];
+                container.appendChild(canvas);
+                console.log(`Created canvas: ${canvasIds[index]}`);
+            }
         }
     });
 }
@@ -2200,20 +2204,11 @@ function createModalMonthlyTrendsChart(rows) {
     });
 }
 
-// Add click event listeners to chart cards
+// Add click event listeners to chart cards (now using dedicated buttons)
 function setupChartModalListeners() {
-    const chartCards = document.querySelectorAll('.chart-card');
-    
-    chartCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const canvas = this.querySelector('canvas');
-            const title = this.querySelector('h4').textContent;
-            
-            if (canvas && canvas.id) {
-                openChartModal(canvas.id, title);
-            }
-        });
-    });
+    // The enlarge buttons now handle the modal opening directly via onclick
+    // This function is kept for backward compatibility but no longer needed
+    console.log('Chart modal listeners setup - using dedicated enlarge buttons');
 }
 
 // Close modal when clicking outside

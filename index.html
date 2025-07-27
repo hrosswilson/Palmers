@@ -76,7 +76,7 @@
                 <div class="data-content">
                     <div class="data-intro">
                         <h3>Recent Fuel Logs</h3>
-                        <p>View and analyze your fuel consumption data across all machines.</p>
+                        <p>View and analyse your fuel consumption data across all machines.</p>
                     </div>
                     <div class="data-placeholder">
                         <div class="placeholder-content">
@@ -96,7 +96,7 @@
                 <div class="analytics-content">
                     <div class="analytics-intro">
                         <h3>Fuel Consumption Analytics</h3>
-                        <p>Track trends, compare machines, and analyze fuel efficiency.</p>
+                        <p>Track trends, compare machines, and analyse fuel efficiency.</p>
                         
 
                         
@@ -123,49 +123,129 @@
                     
                     <div class="charts-grid">
                         <div class="chart-card">
-                            <h4>Litres per Hour by Machine</h4>
+                            <div class="chart-header">
+                                <h4>Litres per Hour by Machine</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('efficiencyChart', 'Litres per Hour by Machine')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="efficiencyChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Monthly Fuel Consumption</h4>
+                            <div class="chart-header">
+                                <h4>Monthly Fuel Consumption</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('monthlyChart', 'Monthly Fuel Consumption')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="monthlyChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Machine Fuel Usage Breakdown</h4>
+                            <div class="chart-header">
+                                <h4>Machine Fuel Usage Breakdown</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('vehicleChart', 'Machine Fuel Usage Breakdown')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="vehicleChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Cost Analysis by Machine</h4>
+                            <div class="chart-header">
+                                <h4>Cost Analysis by Machine</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('costChart', 'Cost Analysis by Machine')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="costChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Cost Per Month</h4>
+                            <div class="chart-header">
+                                <h4>Cost Per Month</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('monthlyCostChart', 'Cost Per Month')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="monthlyCostChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Fuel Usage by Month & Machine</h4>
+                            <div class="chart-header">
+                                <h4>Fuel Usage by Month & Machine</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('stackedMonthlyChart', 'Fuel Usage by Month & Machine')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="stackedMonthlyChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Fuel Usage by Year & Machine</h4>
+                            <div class="chart-header">
+                                <h4>Fuel Usage by Year & Machine</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('yearlyMachineChart', 'Fuel Usage by Year & Machine')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="yearlyMachineChart"></canvas>
                             </div>
                         </div>
                         <div class="chart-card">
-                            <h4>Monthly Trends</h4>
+                            <div class="chart-header">
+                                <h4>Monthly Trends</h4>
+                                <button class="enlarge-chart-btn" onclick="openChartModal('monthlyTrendsChart', 'Monthly Trends')" title="Enlarge Chart">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 3H21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 21H3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 3L13 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M3 21L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <div class="chart-container">
                                 <canvas id="monthlyTrendsChart"></canvas>
                             </div>
