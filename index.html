@@ -2,19 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to My Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2563eb">
+    <title>Farm Fuel Tracker - Track Vehicle Fuel Consumption</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <nav class="nav">
-            <div class="nav-brand">My Website</div>
+            <div class="nav-brand">Farm Fuel Tracker</div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#log-fuel" class="nav-link">Log Fuel</a></li>
+                <li><a href="#view-data" class="nav-link">View Data</a></li>
+                <li><a href="#analytics" class="nav-link">Analytics</a></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -27,42 +32,83 @@
     <main>
         <section id="home" class="hero">
             <div class="container">
-                <h1 class="hero-title">Welcome to My Website</h1>
-                <p class="hero-subtitle">A beautiful, responsive website built with HTML, CSS, and JavaScript</p>
-                <button class="cta-button" onclick="scrollToSection('about')">Learn More</button>
+                <h1 class="hero-title">Farm Fuel Tracker</h1>
+                <p class="hero-subtitle">Track fuel consumption and vehicle hours across your entire fleet</p>
+                <button class="cta-button" onclick="scrollToSection('log-fuel')">Log Fuel Now</button>
             </div>
         </section>
 
-        <section id="about" class="about">
+        <section id="log-fuel" class="log-fuel">
             <div class="container">
-                <h2 class="section-title">About</h2>
-                <div class="about-content">
-                    <div class="about-text">
-                        <p>This is a simple yet elegant website created for GitHub Pages hosting. It features:</p>
-                        <ul class="feature-list">
-                            <li>Responsive design that works on all devices</li>
-                            <li>Modern CSS with smooth animations</li>
-                            <li>Interactive JavaScript functionality</li>
-                            <li>Clean and professional layout</li>
-                        </ul>
+                <h2 class="section-title">Log Fuel Consumption</h2>
+                <div class="form-container">
+                    <div class="form-intro">
+                        <h3>Track Your Vehicle Fuel Usage</h3>
+                        <p>Select your vehicle, enter the fuel quantity and current hours to log your fuel consumption.</p>
                     </div>
-                    <div class="about-card">
-                        <h3>Features</h3>
-                        <div class="feature-grid">
-                            <div class="feature-item">
-                                <div class="feature-icon">📱</div>
-                                <h4>Responsive</h4>
-                                <p>Works perfectly on mobile, tablet, and desktop</p>
+                    <div class="google-form-wrapper">
+                        <iframe 
+                            src="https://docs.google.com/forms/d/e/1FAIpQLSdooF1nSkyBdkMW6JbZbK7E1M_cuUD-32rkk5hIMS5TjaPWbw/viewform?embedded=true" 
+                            width="100%" 
+                            height="600" 
+                            frameborder="0" 
+                            marginheight="0" 
+                            marginwidth="0">
+                            Loading…
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-data" class="view-data">
+            <div class="container">
+                <h2 class="section-title">Fuel Data Overview</h2>
+                <div class="data-content">
+                    <div class="data-intro">
+                        <h3>Recent Fuel Logs</h3>
+                        <p>View and analyze your fuel consumption data across all vehicles.</p>
+                    </div>
+                    <div class="data-placeholder">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">📊</div>
+                            <h4>Data Loading...</h4>
+                            <p>Fuel consumption data will be displayed here once connected to Google Sheets.</p>
+                            <button class="cta-button" onclick="loadData()">Load Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analytics" class="analytics">
+            <div class="container">
+                <h2 class="section-title">Analytics Dashboard</h2>
+                <div class="analytics-content">
+                    <div class="analytics-intro">
+                        <h3>Fuel Consumption Analytics</h3>
+                        <p>Track trends, compare vehicles, and analyze fuel efficiency.</p>
+                    </div>
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h4>Fuel Consumption Trend</h4>
+                            <div class="chart-placeholder">
+                                <div class="chart-icon">📈</div>
+                                <p>Chart will display here</p>
                             </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">⚡</div>
-                                <h4>Fast</h4>
-                                <p>Lightweight and optimized for speed</p>
+                        </div>
+                        <div class="chart-card">
+                            <h4>Vehicle Comparison</h4>
+                            <div class="chart-placeholder">
+                                <div class="chart-icon">🚜</div>
+                                <p>Chart will display here</p>
                             </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">🎨</div>
-                                <h4>Modern</h4>
-                                <p>Clean design with smooth animations</p>
+                        </div>
+                        <div class="chart-card">
+                            <h4>Efficiency Metrics</h4>
+                            <div class="chart-placeholder">
+                                <div class="chart-icon">⚡</div>
+                                <p>Chart will display here</p>
                             </div>
                         </div>
                     </div>
@@ -72,39 +118,28 @@
 
         <section id="contact" class="contact">
             <div class="container">
-                <h2 class="section-title">Contact</h2>
-                <div class="contact-content">
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" required>
+                <h2 class="section-title">Quick Stats</h2>
+                <div class="stats-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🚜</div>
+                            <h3>7</h3>
+                            <p>Vehicles Tracked</p>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                        <div class="stat-card">
+                            <div class="stat-icon">⛽</div>
+                            <h3>0</h3>
+                            <p>Liters This Month</p>
                         </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <h3>0</h3>
+                            <p>Total Hours</p>
                         </div>
-                        <button type="submit" class="submit-button">Send Message</button>
-                    </form>
-                    <div class="contact-info">
-                        <h3>Get in Touch</h3>
-                        <p>Feel free to reach out with any questions or comments!</p>
-                        <div class="contact-details">
-                            <div class="contact-item">
-                                <span class="contact-icon">📧</span>
-                                <span>your.email@example.com</span>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-icon">📱</span>
-                                <span>+1 (555) 123-4567</span>
-                            </div>
-                            <div class="contact-item">
-                                <span class="contact-icon">📍</span>
-                                <span>Your Location</span>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <h3>0</h3>
+                            <p>Fuel Logs</p>
                         </div>
                     </div>
                 </div>
@@ -114,7 +149,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 My Website. Built with ❤️ for GitHub Pages.</p>
+            <p>&copy; 2024 Farm Fuel Tracker. Built with ❤️ for efficient farm management.</p>
         </div>
     </footer>
 
