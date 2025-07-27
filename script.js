@@ -237,6 +237,34 @@ function setupFormListener() {
 const SHEET_ID = '1tVrHhoiEqp9WXd7vUFKvNg5989MsV5cS6Qo8WKVf2fk';
 const API_KEY = 'AIzaSyDoKIsEI4mt6k4JyTkQ8N7gxtC-Y9Rm6vA';
 
+// Rate limiting configuration
+const RATE_LIMIT = {
+    maxRequests: 50, // Reduced from unlimited
+    timeWindow: 60000, // 1 minute
+    currentRequests: 0,
+    lastReset: Date.now()
+};
+
+// Rate limiting function
+function checkRateLimit() {
+    const now = Date.now();
+    
+    // Reset counter if time window has passed
+    if (now - RATE_LIMIT.lastReset > RATE_LIMIT.timeWindow) {
+        RATE_LIMIT.currentRequests = 0;
+        RATE_LIMIT.lastReset = now;
+    }
+    
+    // Check if we're within limits
+    if (RATE_LIMIT.currentRequests >= RATE_LIMIT.maxRequests) {
+        throw new Error('Rate limit exceeded. Please wait before making more requests.');
+    }
+    
+    // Increment counter
+    RATE_LIMIT.currentRequests++;
+    return true;
+}
+
 // Development Mode - Set to true to disable auto-loading
 const DEV_MODE = false; // Change to false when ready for production
 
@@ -254,19 +282,35 @@ async function loadData() {
     const placeholder = document.querySelector('.data-placeholder');
     if (!placeholder) return;
 
-            // Check if we already have data and it's recent (within 10 minutes)
-        if (window.fuelData && window.lastDataFetch && (Date.now() - window.lastDataFetch) < 600000) {
-            console.log('Using cached data (10-minute cache)');
-            displayFuelData(window.fuelData.headers, window.fuelData.recentRows, window.fuelData.allRows);
-            updateDashboardStats(window.fuelData.allRows);
-            
-            // Automatically create charts when using cached data
-            setTimeout(() => {
-                createChartsWhenVisible();
-            }, 500);
-            console.log('Cached data loaded successfully. Charts will be created automatically.');
-            return;
-        }
+    // Check rate limiting before making API calls
+    try {
+        checkRateLimit();
+    } catch (error) {
+        console.error('Rate limit exceeded:', error.message);
+        placeholder.innerHTML = `
+            <div class="placeholder-content">
+                <div class="placeholder-icon">⚠️</div>
+                <h4>Rate Limit Exceeded</h4>
+                <p>Too many requests. Please wait a moment and try again.</p>
+                <button class="cta-button" onclick="loadData()">Retry</button>
+            </div>
+        `;
+        return;
+    }
+
+    // Check if we already have data and it's recent (within 10 minutes)
+    if (window.fuelData && window.lastDataFetch && (Date.now() - window.lastDataFetch) < 600000) {
+        console.log('Using cached data (10-minute cache)');
+        displayFuelData(window.fuelData.headers, window.fuelData.recentRows, window.fuelData.allRows);
+        updateDashboardStats(window.fuelData.allRows);
+        
+        // Automatically create charts when using cached data
+        setTimeout(() => {
+            createChartsWhenVisible();
+        }, 500);
+        console.log('Cached data loaded successfully. Charts will be created automatically.');
+        return;
+    }
 
     try {
         // Show loading state
@@ -1218,7 +1262,7 @@ function showAnalyticsError() {
 
 // Update cost analysis based on diesel price
 function updateCostAnalysis() {
-    const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
+    const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 0.70;
     
     if (window.fuelData && window.fuelData.allRows) {
         // Destroy existing cost charts before recreating
@@ -1333,7 +1377,7 @@ function createAnalyticsCharts(data) {
     
     try {
         console.log('Creating cost chart...');
-        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
+        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 0.70;
         const costData = calculateCosts(data.allRows, dieselPrice);
         updateCostDisplay(costData);
         createCostChart(costData);
@@ -1343,7 +1387,7 @@ function createAnalyticsCharts(data) {
     
     try {
         console.log('Creating monthly cost chart...');
-        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
+        const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 0.70;
         createMonthlyCostChart(data.allRows, dieselPrice);
     } catch (error) {
         console.error('Error creating monthly cost chart:', error);
@@ -1591,12 +1635,12 @@ function recreateChartInModal(chartId) {
             createModalVehicleChart(window.fuelData.allRows);
             break;
         case 'costChart':
-            const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
+            const dieselPrice = parseFloat(document.getElementById('dieselPrice').value) || 0.70;
             const costData = calculateCosts(window.fuelData.allRows, dieselPrice);
             createModalCostChart(costData);
             break;
         case 'monthlyCostChart':
-            const dieselPrice2 = parseFloat(document.getElementById('dieselPrice').value) || 1.15;
+            const dieselPrice2 = parseFloat(document.getElementById('dieselPrice').value) || 0.70;
             createModalMonthlyCostChart(window.fuelData.allRows, dieselPrice2);
             break;
         case 'stackedMonthlyChart':
