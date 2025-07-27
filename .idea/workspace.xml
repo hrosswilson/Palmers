@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="78400b26-1cd7-4233-90fc-a80af9d6a19c" name="Changes" comment="Initial Commit">
+    <list default="true" id="78400b26-1cd7-4233-90fc-a80af9d6a19c" name="Changes" comment="Initial live website prep for api integration">
+      <change beforePath="$PROJECT_DIR$/.idea/Palmers.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Palmers.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/script.js" afterDir="false" />
@@ -68,7 +69,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753605609099</updated>
-      <workItem from="1753605610125" duration="1095000" />
+      <workItem from="1753605610125" duration="5464000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -78,7 +79,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753605869713</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Initial live website prep for api integration">
+      <option name="closed" value="true" />
+      <created>1753608307158</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1753608307158</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,6 +95,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial Commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
+    <MESSAGE value="Initial live website prep for api integration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial live website prep for api integration" />
   </component>
 </project>
