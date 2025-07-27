@@ -812,6 +812,132 @@ function addMobileOptimizations() {
             this.click();
         }, { passive: false });
     });
+    
+    // Improve analytics section scrolling
+    improveAnalyticsScrolling();
+    
+    // Optimize hero section for mobile
+    optimizeHeroSection();
+}
+
+// Improve scrolling in analytics section
+function improveAnalyticsScrolling() {
+    const analyticsSection = document.querySelector('#analytics');
+    if (!analyticsSection) return;
+    
+    // Add better touch handling for the analytics section
+    analyticsSection.style.webkitOverflowScrolling = 'touch';
+    analyticsSection.style.overflowScrolling = 'touch';
+    
+    // Add passive touch listeners to improve scroll performance
+    analyticsSection.addEventListener('touchstart', function() {}, { passive: true });
+    analyticsSection.addEventListener('touchmove', function() {}, { passive: true });
+    
+    // Improve chart container scrolling
+    const chartContainers = document.querySelectorAll('.chart-container');
+    chartContainers.forEach(container => {
+        container.style.webkitOverflowScrolling = 'touch';
+        container.style.overflowScrolling = 'touch';
+    });
+}
+
+// Optimize hero section for mobile performance
+function optimizeHeroSection() {
+    const heroSection = document.querySelector('.hero');
+    if (!heroSection) return;
+    
+    // Force hardware acceleration for better performance
+    heroSection.style.transform = 'translateZ(0)';
+    heroSection.style.backfaceVisibility = 'hidden';
+    
+    // Optimize background image loading
+    const heroBackground = getComputedStyle(heroSection).backgroundImage;
+    if (heroBackground && heroBackground !== 'none') {
+        // Preload the background image
+        const img = new Image();
+        img.src = heroBackground.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
+        
+        // Once loaded, optimize the hero section and adjust positioning
+        img.onload = function() {
+            heroSection.style.backgroundImage = heroBackground;
+            
+            // Adjust image positioning based on screen size and orientation
+            adjustHeroImagePosition(heroSection, img);
+            
+            // Remove will-change after image is loaded to save memory
+            setTimeout(() => {
+                const animatedElements = heroSection.querySelectorAll('.hero-title, .hero-subtitle, .cta-button');
+                animatedElements.forEach(el => {
+                    el.style.willChange = 'auto';
+                });
+            }, 1000);
+        };
+    }
+    
+    // Reduce animation complexity on mobile
+    if (window.innerWidth <= 768) {
+        // Use simpler animations on mobile
+        const animatedElements = heroSection.querySelectorAll('.hero-title, .hero-subtitle, .cta-button');
+        animatedElements.forEach((el, index) => {
+            el.style.animationDuration = '0.6s';
+            el.style.animationDelay = `${index * 0.1}s`;
+        });
+    }
+    
+    // Optimize scroll performance for hero section
+    heroSection.addEventListener('touchstart', function() {}, { passive: true });
+    heroSection.addEventListener('touchmove', function() {}, { passive: true });
+    
+    // Adjust image position on orientation change
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            const img = new Image();
+            img.src = heroBackground.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
+            img.onload = function() {
+                adjustHeroImagePosition(heroSection, img);
+            };
+        }, 500);
+    });
+}
+
+// Adjust hero image positioning for better mobile fit
+function adjustHeroImagePosition(heroSection, img) {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const imgWidth = img.naturalWidth;
+    const imgHeight = img.naturalHeight;
+    
+    // Calculate aspect ratios
+    const screenRatio = screenWidth / screenHeight;
+    const imgRatio = imgWidth / imgHeight;
+    
+    // Determine optimal positioning based on screen size and orientation
+    if (screenWidth <= 480) {
+        // Small screens - position to show most interesting part
+        if (screenRatio < 1) {
+            // Portrait - position higher to show more content
+            heroSection.style.backgroundPosition = 'center 40%';
+        } else {
+            // Landscape - position to center
+            heroSection.style.backgroundPosition = 'center 30%';
+        }
+    } else if (screenWidth <= 768) {
+        // Medium screens
+        if (screenRatio < 1) {
+            // Portrait
+            heroSection.style.backgroundPosition = 'center 35%';
+        } else {
+            // Landscape
+            heroSection.style.backgroundPosition = 'center 25%';
+        }
+    } else {
+        // Large screens - default positioning
+        heroSection.style.backgroundPosition = 'center center';
+    }
+    
+    // Ensure proper background sizing
+    heroSection.style.backgroundSize = 'cover';
+    heroSection.style.backgroundRepeat = 'no-repeat';
 }
 
 // ===== MOBILE CHART TAP FUNCTIONALITY =====
@@ -928,10 +1054,42 @@ function addMobileChartTapFunctionality(chart, chartId) {
         }
     }
     
-    // Add event listeners for mobile
+    // Add event listeners for mobile with improved scroll handling
+    let touchStartTime = 0;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    
     canvas.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        handleTap(e.touches[0]);
+        touchStartTime = Date.now();
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+        isScrolling = false;
+    }, { passive: true });
+    
+    canvas.addEventListener('touchmove', function(e) {
+        const touchY = e.touches[0].clientY;
+        const touchX = e.touches[0].clientX;
+        const deltaY = Math.abs(touchY - touchStartY);
+        const deltaX = Math.abs(touchX - touchStartX);
+        
+        // If vertical movement is greater than horizontal, it's likely scrolling
+        if (deltaY > deltaX && deltaY > 10) {
+            isScrolling = true;
+        }
+    }, { passive: true });
+    
+    canvas.addEventListener('touchend', function(e) {
+        const touchEndTime = Date.now();
+        const touchDuration = touchEndTime - touchStartTime;
+        const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+        const deltaX = Math.abs(e.changedTouches[0].clientX - touchStartX);
+        
+        // Only handle as tap if it's a short touch and not a scroll
+        if (touchDuration < 300 && !isScrolling && deltaY < 10 && deltaX < 10) {
+            e.preventDefault();
+            handleTap(e.changedTouches[0]);
+        }
     }, { passive: false });
     
     // Also add click for desktop testing

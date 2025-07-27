@@ -127,10 +127,13 @@ body {
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('20240829_161839 Copy.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-attachment: scroll; /* Changed from fixed for better mobile performance */
     color: white;
     position: relative;
     overflow: hidden;
+    /* Optimize for mobile performance */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .hero::before {
@@ -154,6 +157,8 @@ body {
     font-weight: 700;
     margin-bottom: 1rem;
     animation: fadeInUp 1s ease;
+    /* Optimize for mobile performance */
+    will-change: transform, opacity;
 }
 
 .hero-subtitle {
@@ -161,6 +166,8 @@ body {
     margin-bottom: 2rem;
     opacity: 0.9;
     animation: fadeInUp 1s ease 0.2s both;
+    /* Optimize for mobile performance */
+    will-change: transform, opacity;
 }
 
 .cta-button {
@@ -174,6 +181,8 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     animation: fadeInUp 1s ease 0.4s both;
+    /* Optimize for mobile performance */
+    will-change: transform;
 }
 
 .cta-button:hover {
@@ -987,6 +996,18 @@ section {
 
     .chart-container {
         min-height: 300px;
+        /* Improve scrolling on mobile */
+        touch-action: pan-x pan-y;
+    }
+    
+    /* Add more space between chart cards for easier scrolling */
+    .chart-card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Improve analytics section scrolling */
+    .analytics-content {
+        padding-bottom: 2rem;
     }
 
     /* Cost Calculator */
@@ -1084,6 +1105,14 @@ section {
 }
 
 @media (max-width: 480px) {
+    .hero {
+        /* Small screen image fitting */
+        background-position: center 35%;
+        background-size: cover;
+        /* Ensure proper scaling on very small screens */
+        min-height: 100vh;
+    }
+    
     .hero-title {
         font-size: 2rem;
         line-height: 1.2;
@@ -1215,8 +1244,50 @@ html {
     backdrop-filter: blur(4px);
 }
 
+/* ===== MOBILE CHART SCROLL IMPROVEMENTS ===== */
+.chart-container {
+    /* Improve touch scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+
+.chart-container canvas {
+    /* Allow touch events to pass through for scrolling */
+    touch-action: pan-x pan-y;
+    /* Prevent zoom on double tap */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /* ===== MOBILE TOUCH OPTIMIZATIONS ===== */
 @media (max-width: 768px) {
+    /* Hero section mobile optimizations */
+    .hero {
+        background-attachment: scroll; /* Force scroll on mobile for better performance */
+        min-height: 100vh;
+        /* Reduce animation complexity on mobile */
+        animation: none;
+    }
+    
+    .hero-title {
+        animation: fadeInUp 0.6s ease; /* Faster animation on mobile */
+        will-change: auto; /* Reset will-change after animation */
+    }
+    
+    .hero-subtitle {
+        animation: fadeInUp 0.6s ease 0.1s both; /* Faster animation on mobile */
+        will-change: auto; /* Reset will-change after animation */
+    }
+    
+    .cta-button {
+        animation: fadeInUp 0.6s ease 0.2s both; /* Faster animation on mobile */
+        will-change: auto; /* Reset will-change after animation */
+    }
+    
     /* Improve touch targets */
     button, .nav-link, .cta-button {
         -webkit-tap-highlight-color: transparent;
@@ -1255,6 +1326,55 @@ html {
         * {
             transition-duration: 0.1s !important;
             animation-duration: 0.1s !important;
+        }
+    }
+    
+    /* Additional mobile performance optimizations */
+    .hero {
+        /* Force hardware acceleration */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        /* Optimize background rendering */
+        -webkit-background-size: cover;
+        background-size: cover;
+        /* Better mobile image positioning */
+        background-position: center center;
+        /* Reduce repaints */
+        contain: layout style paint;
+    }
+    
+    /* Optimize text rendering */
+    .hero-title, .hero-subtitle {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+    
+    /* Mobile-specific image fitting improvements */
+    .hero {
+        /* Better image fitting for mobile */
+        background-size: cover;
+        background-position: center 30%; /* Position image to show more interesting part */
+        background-repeat: no-repeat;
+        /* Ensure image covers the full area properly */
+        background-clip: border-box;
+    }
+    
+    /* Landscape orientation adjustments */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .hero {
+            background-position: center 25%; /* Slightly higher for landscape */
+            min-height: 80vh; /* Reduce height in landscape */
+        }
+    }
+    
+    /* Portrait orientation adjustments */
+    @media (max-width: 768px) and (orientation: portrait) {
+        .hero {
+            background-position: center 40%; /* Higher position for portrait */
+            background-size: cover;
         }
     }
     
